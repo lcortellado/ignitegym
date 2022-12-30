@@ -1,5 +1,6 @@
 import { StatusBar, Text, View } from 'react-native';
 import {useFonts, Roboto_400Regular, Roboto_700Bold} from '@expo-google-fonts/roboto'
+import { NativeBaseProvider } from 'native-base';
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -8,13 +9,13 @@ export default function App() {
   })
 
   return (
-    <View style ={{flex: 1, justifyContent:'center', alignItems: 'center', backgroundColor: 'gray'}}>
+    <NativeBaseProvider>
     <StatusBar 
     barStyle="light-content"
     backgroundColor="transparent"
     translucent
     />
-    {fontsLoaded ?  <Text>Open up App.tsx to start working on your app!</Text> : <View />} 
-    </View>
+    {fontsLoaded ?  <View /> : <View />} 
+    </NativeBaseProvider>
   );
 }
