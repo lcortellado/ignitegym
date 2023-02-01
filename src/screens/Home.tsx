@@ -1,7 +1,9 @@
 import { Group } from "@components/Group";
 import { HomeHeader } from "@components/HomeHeader";
-import { VStack, HStack, FlatList } from "native-base";
+import { VStack, HStack, FlatList, Heading, Text } from "native-base";
 import { useState } from "react";
+import { Exercise } from "./Exercise";
+import { ExerciseCard } from "@components/ExerciseCard";
 
 export function Home() {
   const [groups, setGroups] = useState(["Costas", "Bicep", "Triceps", "ombro"]);
@@ -26,6 +28,19 @@ export function Home() {
         my={10}
         maxH={10}
       />
+
+      <VStack>
+        <HStack justifyContent="space-between">
+          <Heading color="gray.200" fontSize="md">
+            Exercise
+          </Heading>
+
+          <Text color="gray.200" fontSize="sm">
+            4
+          </Text>
+        </HStack>
+      </VStack>
+      <ExerciseCard />
     </VStack>
   );
 }
