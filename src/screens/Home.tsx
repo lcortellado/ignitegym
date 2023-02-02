@@ -4,9 +4,16 @@ import { VStack, HStack, FlatList, Heading, Text } from "native-base";
 import { useState } from "react";
 import { Exercise } from "./Exercise";
 import { ExerciseCard } from "@components/ExerciseCard";
+import { FA5Style } from "@expo/vector-icons/build/FontAwesome5";
 
 export function Home() {
   const [groups, setGroups] = useState(["Costas", "Bicep", "Triceps", "ombro"]);
+  const [exercises, setExercises] = useState([
+    "Puxada frontal",
+    "Remada curvada",
+    "Remada derecha",
+    "Hombro izquierdo",
+  ]);
   const [groupSelected, setGroupSelected] = useState("costa");
 
   return (
@@ -19,7 +26,9 @@ export function Home() {
           <Group
             onPress={() => setGroupSelected(item)}
             name={item}
-            isActive={groupSelected === item}
+            isActive={
+              groupSelected.toLocaleLowerCase() === item.toLocaleLowerCase()
+            }
           />
         )}
         horizontal
@@ -29,18 +38,24 @@ export function Home() {
         maxH={10}
       />
 
-      <VStack>
+      <VStack flex={1} px={8}>
         <HStack justifyContent="space-between">
           <Heading color="gray.200" fontSize="md">
             Exercise
           </Heading>
 
           <Text color="gray.200" fontSize="sm">
-            4
+            {exercises.length}
           </Text>
         </HStack>
+        <FlatList
+          data={exercises}
+          keyExtractor={(item) => item}
+          renderItem={({ item }) => <ExerciseCard />}
+          showsHorizontalScrollIndicator={false}
+          _contentContainerStyle={{ paddingBottom: 20 }}
+        />
       </VStack>
-      <ExerciseCard />
     </VStack>
   );
 }
