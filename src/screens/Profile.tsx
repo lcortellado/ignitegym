@@ -43,7 +43,6 @@ export function Profile() {
         return;
       }
 
-      console.log(photoSelected.assets[0].uri, "urifoto");
       if (photoSelected.assets[0].uri) {
         const photo = await FileSystem.getInfoAsync(
           photoSelected.assets[0].uri
@@ -115,6 +114,7 @@ export function Profile() {
             mb={2}
             alignSelf="flex-start"
             mt={12}
+            fontFamily="heading"
           >
             Cambiar contraseña
           </Heading>
