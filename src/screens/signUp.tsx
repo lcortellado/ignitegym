@@ -1,4 +1,12 @@
-import { Center, Heading, Image, ScrollView, Text, VStack } from "native-base";
+import {
+  Center,
+  Heading,
+  Image,
+  ScrollView,
+  Text,
+  VStack,
+  useToast,
+} from "native-base";
 
 import BackgroundImg from "@assets/background.png";
 import LogoSvg from "@assets/logo.svg";
@@ -10,6 +18,9 @@ import * as yup from "yup";
 
 import { Input } from "@components/Input";
 import { Button } from "@components/Button";
+import { api } from "@services/api";
+import axios from "axios";
+import { AppError } from "../utils/AppError";
 
 type formDataProps = {
   name: string;
@@ -34,6 +45,8 @@ const signUpSchema = yup.object({
 export function SignUp() {
   const navigation = useNavigation();
 
+  const toast = useToast();
+
   const {
     control,
     handleSubmit,
@@ -47,18 +60,32 @@ export function SignUp() {
   }
 
   async function handleSignUp({ name, email, password }: formDataProps) {
-    console.log(name, email, password);
-    const response = await fetch("http://192.168.1.212:3333/users", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ name, email, password }),
-    });
+    try {
+      const response = await api.post("/users", { name, email, password });
+    } catch (error) {
+      const isAppError = error instanceof AppError;
+      const title = isAppError
+        ? error.message
+        : "No fue posible crear la cuenta, intentelo de nuevo.";
 
-    const data = await response.json();
-    console.log(data);
+      toast.show({
+        title,
+        placement: "top",
+        bgColor: "red.500",
+      });
+    }
+
+    // const response = await fetch("http://192.168.1.212:3333/users", {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({ name, email, password }),
+    // });
+
+    // const data = await response.json();
+    // console.log(data);
   }
 
   return (
