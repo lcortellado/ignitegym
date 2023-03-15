@@ -6,9 +6,28 @@ import { Input } from "@components/Input";
 import { Button } from "@components/Button";
 import { useNavigation } from "@react-navigation/native";
 import { AuthNavigatorRoutesProps } from "@routes/auth.routes";
+import { Controller, useForm } from "react-hook-form";
+import { useAuth } from "../hooks/useAuth";
+
+type formDataProps = {
+  email: string;
+  password: string;
+};
 
 export function SignIn() {
   const navigation = useNavigation<AuthNavigatorRoutesProps>();
+
+  const { signIn } = useAuth();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<formDataProps>();
+
+  async function handleSignIn({ email, password }: formDataProps) {
+    await signIn(email, password);
+  }
 
   function handleNewAccount() {
     navigation.navigate("signUp");
@@ -38,14 +57,37 @@ export function SignIn() {
             Acceda a su cuenta
           </Heading>
 
-          <Input
-            placeholder="E-mail"
-            keyboardType="email-address"
-            autoCapitalize="none"
+          <Controller
+            control={control}
+            name="email"
+            rules={{ required: "Informe su e-mail" }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="E-mail"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.email?.message}
+              />
+            )}
           />
-          <Input placeholder="Contraseña" secureTextEntry />
+          <Controller
+            control={control}
+            name="password"
+            rules={{ required: "Informe su contraseña" }}
+            render={({ field: { onChange, value } }) => (
+              <Input
+                placeholder="Contraseña"
+                secureTextEntry
+                onChangeText={onChange}
+                value={value}
+                errorMessage={errors.password?.message}
+              />
+            )}
+          />
 
-          <Button title="Accesar" />
+          <Button title="Accesar" onPress={handleSubmit(handleSignIn)} />
         </Center>
         <Center mt={24}>
           <Text color="gray.100" fontFamily="body" fontSize="sm" mb={3}>
