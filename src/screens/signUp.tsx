@@ -21,6 +21,8 @@ import { Button } from "@components/Button";
 import { api } from "@services/api";
 import axios from "axios";
 import { AppError } from "../utils/AppError";
+import { useState } from "react";
+import { useAuth } from "../hooks/useAuth";
 
 type formDataProps = {
   name: string;
@@ -43,7 +45,10 @@ const signUpSchema = yup.object({
 });
 
 export function SignUp() {
+  const [isLoading, setIsLoading] = useState(false);
   const navigation = useNavigation();
+
+  const { signIn } = useAuth();
 
   const toast = useToast();
 
@@ -61,8 +66,12 @@ export function SignUp() {
 
   async function handleSignUp({ name, email, password }: formDataProps) {
     try {
-      const response = await api.post("/users", { name, email, password });
+      setIsLoading(true);
+
+      await api.post("/users", { name, email, password });
+      await signIn(email, password);
     } catch (error) {
+      setIsLoading(false);
       const isAppError = error instanceof AppError;
       const title = isAppError
         ? error.message
@@ -184,6 +193,7 @@ export function SignUp() {
           <Button
             title="Crear y Accesar"
             onPress={handleSubmit(handleSignUp)}
+            isLoading={isLoading}
           />
         </Center>
 
